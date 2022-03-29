@@ -14,13 +14,12 @@
  * Define Global Variables
 */ 
 //  1) to save all sections  that matches the "section"               ==> i used it in main function.
-var existingSections   ;
+let existingSections;
 //  2) to save all ancors   that matches the "a"                      ==> i used it in main functio.
-var ourUL;
 //  3) to Creates a new empty nodes can be added to build an UL tree  ==> just for fet good performance.
-var emptyList      ;
+let emptyList;
 //  4) another way to save  all sections  that matches the "section"  ==> i used it to scoop in active section.
-var SectionsArray   ;
+let SectionsArray;
  
 /**
  * End Global Variables
@@ -37,9 +36,13 @@ var SectionsArray   ;
 
  existingSections     = document.querySelectorAll("section");
  SectionsArray        = Array.from(document.querySelectorAll("section"));
- ourUL                = document.getElementById('navbar__list');
+ ElemontsArray        = [] ;
+ //MenuItemsArray        = Array.from(document.querySelectorAll("section"));
+ ourUl                = document.getElementById('navbar__list');
  emptyList            = document.createDocumentFragment();
- let counter = 0;   // <=== to counte number of sections 
+
+    // <=== to counte number of sections 
+    let counter = 0;
 
 /**
  * End Helper Functions
@@ -59,7 +62,7 @@ var SectionsArray   ;
     */
     // start loop on all  existind sections
     existingSections.forEach 
-      ((newEliment)=>                       //==> hold sections one by one
+      ((newEliment)=>
         {
           counter++;
           /**
@@ -67,9 +70,10 @@ var SectionsArray   ;
           */ 
           //  to get  the value of a section defiend by 'id' actuallt z section name  .
           const sectionId = newEliment.getAttribute('id');
-          //console.log(sectionId);
+          console.log('id= '+ sectionId);
           //  to get  the value of a section defiend by ''data-nav'' actually z section title  .
           const sectionTitle = newEliment.getAttribute('data-nav');
+          console.log("data-nav= "+ sectionTitle)
           // method to create a new element specified by 'li'
           const NewLi = document.createElement('li');
           // method to create a new element specified by 'a'
@@ -79,21 +83,22 @@ var SectionsArray   ;
           // method to add a new element  to the end of the list of UL
           NewLi.appendChild(anchors);
           // to append new contents to the existing  element.
-          NewLi.innerHTML= `<a class='menu__link' '#${sectionId}'>${sectionTitle}</a>`;
+          NewLi.innerHTML= `<a class='menu__link' data-nav='#${sectionTitle} '#${sectionId}' >${sectionTitle}</a>`;
+         // " data-nav="${section.id}
+         console.log(NewLi);
           // method to add a new element  to the end of the emptyNewLi wich will be add to list of UL
-          if (sectionId != 'newsectiom' )           //                <=== dont enclude this section in Menu Bar
+          if (sectionId != 'newsectiom')
           {
-              emptyList.appendChild(NewLi);         //                <=== add the element to empty list 
-              //alert(NewLi);
-              
-              NewLi.addEventListener                //                <=== to chick in any click on any element if the Menu we have add Listener
+              emptyList.appendChild(NewLi);
+              NewLi.addEventListener
               (
-                  "click", (smoothScolling) =>
+                  "click",(smoothScolling) =>
                     {   
                       // start fnuction Scrolling to section where link click
                       // Scroll amoothly  to anchor ID using scroll TO event
-                      newEliment.scrollIntoView({  behavior:"smooth"});
-                      console.log(newEliment);
+                      newEliment.scrollIntoView({behavior:"smooth",block:"center"});
+                      smoothScolling.preventDefault();
+                     // console.log(newEliment);
                       // end nuction Scrollin 
                    }
               )
@@ -104,15 +109,15 @@ var SectionsArray   ;
       // ==========================> END MAIN Functiom <==================================//
       //==============================================================================//
         // now i can buld z Navigation bar (horizontal menu)
-      ourUL.appendChild(emptyList);
+      ourUl.appendChild(emptyList);
     //============================================================================================================================//
     // ===============================================> SUB Function 1 <============================================================//
     //================================ to test whether a section is in the viewport.==============================================//
       function detSectionScope (secElement)
       {
-        let secPosition = secElement.getBoundingClientRect() // ====> to get  actual diminsion for curren section
+        let secPosition = secElement.getBoundingClientRect()
         // console.log(secPosition)
-        if (secPosition.top >= 0  ||secPosition.buttom <100  )             // ====> is the top of curren section in the beging of screen?
+        if (secPosition.top >= 0  ||secPosition.buttom <100  )
           return true;
         else
           return false;
@@ -123,24 +128,34 @@ var SectionsArray   ;
            
       function perfomActvation()
       {
-        for (  currentSec of SectionsArray) {             // ===> i had to use an array her to get the correct order of sections in DOM
+        for (  currentSec of SectionsArray) {
+       //   let activeLink = navBar.querySelector(`[data-nav=${active.id}]`);
+       let activeLink = document.querySelector('.menu__link');
+       const sectionTitle = currentSec.getAttribute('data-nav');
            // console.log(currentSec);
-          if (detSectionScope(currentSec))                // ===> chick if it in vewport
+             console.log("menue link= " + activeLink);
+             console.log("section title = " + sectionTitle)
+          if (detSectionScope(currentSec))
           { 
             if (!currentSec.classList.contains('your-active-class'))
             {
-                  currentSec.classList.add('your-active-class')  } ;    // ===> active if it in vewport if it in vewport
+                  currentSec.classList.add('your-active-class');
+
+             //     currentSec.classList.add('your-active-class');
+                  
+            };    // ===> active if it in vewport if it in vewport
             }
           else 
-            currentSec.classList.remove('your-active-class')     // ===> disactive if it is not in vewport if it in vewport
+                 // ===> disactive if it is not in vewport if it in vewport
+            currentSec.classList.remove('your-active-class')
         }
 
        }
     //===========================================================================================================================//
     // ===============================================> End SUB Functions <======================================================//
     //===========================================================================================================================//
-      document.addEventListener('scroll',perfomActvation) ;   // =======> call sub functins and
-                                                              // =======>  Begin Events whin Scroll to section on link click
+      document.addEventListener('scroll',perfomActvation);
+ // =======>  Begin Events whin Scroll to section on link click
     
 
 /**
@@ -166,9 +181,10 @@ var SectionsArray   ;
          </div>
       </section>
    */ 
-function  createSection  (newTitle , newContaine) {
-  const content =
-   `<section id="section${counter}" data-nav="${newTitle}" class="your-active-class" >
+function  createSection  (newTitle , newContaine)
+{
+  const content=
+   `<section id="section${counter}" data-nav="${newTitle}" class="your-active-class">
     <div class="landing__container">
     <h2>${newTitle}</h2>
     <p> ${newContaine} 
@@ -187,12 +203,14 @@ document.getElementById("submit").addEventListener
 (
   "click", () => 
     {
-      var newHeader = document.getElementById('fname').value;       //  <===== title of paragraph
+      //  <===== title of paragraph
+      let newHeader = document.getElementById('fname').value;
       // console.log ('newHeader = '+ newHeader);
-      var  newText = document.getElementById('mytextarea').value;   //  <===== body of paragraph
+         //  <===== body of paragraph
+      let  newText = document.getElementById('mytextarea').value;
       // console.log ('newText = '+ newText);
-      createSection(newHeader,newText);                             //  <===== call creation functio
-      addItemToMenue (newHeader);                                   //  <===== call funtion to add a new section title to nav bar
+      createSection(newHeader,newText);
+      addItemToMenue (newHeader);
     }
 );
 
@@ -234,7 +252,7 @@ function addItemToMenue (newHeaderaSSectiontitle)
     }
   )
   
-  ourUL.appendChild(NewLi);
+  ourUl.appendChild(NewLi);
   }
 // Scroll to section on link click
 
